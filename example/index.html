@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <title>Simple Mail Package Example</title>
+    <script src="https://www.google.com/recaptcha/api.js?render=6LcGKKoZAAAAAC_m382ekbY3LnPxqbC6977OzfXF"></script>
+</head>
+<body>
+    <form action="mailer.php" method="POST" id="simple-form" class="form contact-simple">
+        <div>
+            <label for="contact_name"></label>
+            <input id="contact_name" name="contact_name" type="text" value="First & Last Name">
+        </div>
+        <div>
+            <label for="email"></label>
+            <input id="email" name="email" type="text" value="mymail@example.com">
+        </div>
+        <div>
+            <label for="message"></label>
+            <textarea id="message" name="message">Lorem ipsum dolor sit</textarea>
+        </div>
+        <button type="submit">Send message</button>
+    </form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        const SITE_KEY = '6LcGKKoZAAAAAC_m382ekbY3LnPxqbC6977OzfXF';
+        const CAPTCHA_ACTION = 'submit';
+        const REQUEST_URL = "mailer.php";
+
+        let form = $('#simple-form');
+        let requestData =  {
+            'contact_name': $('#contact_name').val(),
+            'email': $('#email').val(),
+            'message': $('#message').val(),
+        };
+
+        form.on('submit',function (e) {
+            e.preventDefault();
+
+            grecaptcha.ready(function() {
+                grecaptcha.execute(SITE_KEY, {action: CAPTCHA_ACTION}).then(function(token) {
+                    requestData['g-recaptcha-response'] = token;
+                    console.log(requestData)
+                    makeRequest();
+                });
+            });
+
+        });
+
+        function makeRequest() {
+            $.ajax( {
+                url : REQUEST_URL,
+                data :  requestData,
+                method: $(form).attr('method')
+            } )
+             .done(function(data, textStatus, jqXHR) {
+                 if (data.status === true) {
+                     actionOnSuccess();
+                     form[0].reset();
+                 }
+                 if (data.status === false) {
+                     actionOnUnSuccess();
+                 }
+             })
+             .fail(function(data, textStatus, jqXHR) {
+                 actionOnFail();
+             })
+             .always(function(data, textStatus, jqXHR) {
+                 actionAfterXhrRequest()
+             });
+        }
+
+        function actionOnSuccess() {
+            // make some animation atc. if submit is successfully sent ...
+        }
+
+        function actionOnUnSuccess() {
+            // make some animation atc. if submit was not sent ...
+        }
+
+        function actionOnFail() {
+            // make some animation atc. if submit failed ...
+        }
+
+        function actionAfterXhrRequest() { // this always runs, no matter if succeeded or failed
+            // this block always run if request ended ...
+        }
+
+
+    });
+
+
+</script>
+</body>
+</html>

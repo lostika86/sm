@@ -1,0 +1,18 @@
+{
+    "name": "lostika86/simple-mailer",
+    "description": "Simple mailing bootstrap package",
+    "autoload": {
+        "psr-4": {
+            "JPackages\\": "src/"
+        }
+    },
+    "require": {
+        "phpmailer/phpmailer": "^5.2",
+        "google/recaptcha": "^1.2",
+        "swiftmailer/swiftmailer": "^6.0",
+        "ezyang/htmlpurifier": "^4.10",
+        "respect/validation": "^1.1",
+        "illuminate/http" : "5.8.*",
+        "vlucas/phpdotenv": "^4.1"
+    }
+}
