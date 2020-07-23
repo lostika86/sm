@@ -13,6 +13,6 @@
         "ezyang/htmlpurifier": "^4.10",
         "respect/validation": "^1.1",
         "illuminate/http" : "5.8.*",
-        "vlucas/phpdotenv": "^4.1"
+        "vlucas/phpdotenv": "^3.4.0"
     }
 }
