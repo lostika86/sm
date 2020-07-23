@@ -1,5 +1,5 @@
 {
-    "name": "lostika86/simple-mailer",
+    "name": "lostika86/sm",
     "description": "Simple mailing bootstrap package",
     "autoload": {
         "psr-4": {
