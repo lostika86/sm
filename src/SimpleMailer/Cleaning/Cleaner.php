@@ -2,7 +2,7 @@
 
 namespace JPackages\SimpleMailer\Cleaning;
 
-require_once __DIR__.'/../../../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
+require_once __DIR__ . '/../../../../../ezyang/htmlpurifier/library/HTMLPurifier.auto.php';
 
 use HTMLPurifier_Config as Cleaner_Config;
 use HTMLPurifier as Clean;
