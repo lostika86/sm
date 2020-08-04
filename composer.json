@@ -12,8 +12,8 @@
         "ezyang/htmlpurifier": "^4.10",
         "respect/validation": "^1.1",
         "vlucas/phpdotenv": "^3.4.0",
-        "illuminate/contracts": "^7.21",
-        "illuminate/http": "^7.23"
+        "illuminate/contracts": "^6.10",
+        "illuminate/http": "^6.10"
     },
     "config": {
         "sort-packages": true,
