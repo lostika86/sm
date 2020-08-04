@@ -20,20 +20,17 @@ class ComposerScripts{
 
 	public static function setupMailer(Event $event)
 	{
-		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
-		// do stuff
-		$arguments = $event->getArguments();
+//		$vendorDir = $event->getComposer()->getConfig()->get('vendor-dir');
+//		// do stuff
+//		$arguments = $event->getArguments();
+//
+//		$exampleSrcConfig = self::getConfigFilePath($vendorDir);
+//		$destinationPath = self::detectConfigPathFromArguments($arguments);
+//
+//		$fileName = 'mailer_config.php';
+//		copy($exampleSrcConfig.$fileName,$destinationPath.$fileName);
 
-		$exampleSrcConfig = self::getConfigFilePath($vendorDir);
-		$destinationPath = self::detectConfigPathFromArguments($arguments);
 
-		$fileName = 'mailer_config.php';
-		copy($exampleSrcConfig.$fileName,$destinationPath.$fileName);
-
-		var_dump($arguments);
-		var_dump($destinationPath);
-		var_dump($vendorDir);
-		exit();
 	}
 
 	private static function getConfigFilePath(string $vendorDir) : string
