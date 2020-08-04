@@ -36,7 +36,7 @@ class MailBody
 			if (in_array($block, $this->hidden, true)) {
 				continue;
 			}
-			$methodName =  'block' . ucfirst(camel_case($block));
+			$methodName =  'block' . ucfirst(ucwords($block));
 
 			if (method_exists($this,$methodName))
 			{

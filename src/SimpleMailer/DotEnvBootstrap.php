@@ -4,9 +4,9 @@ use Dotenv\Dotenv;
 
 final class DotEnvBootstrap
 {
-	public static function make(string $path = '/../../')
+	public static function make(string $path = __DIR__.'/../../../../')
 	{
-		$dotenv = Dotenv::createImmutable(__DIR__.$path);
+		$dotenv = Dotenv::create($path);
 		$dotenv->load();
 	}
 }

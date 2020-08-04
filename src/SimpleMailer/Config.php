@@ -6,35 +6,10 @@ abstract class Config
 {
 	public static function formConfig(): array
 	{
-		$formFields 	= [
-			[
-				'type' 	=> 'text',
-				'name' => 'contact_name',
-				'rules' =>  ['notEmpty', 'stringType'],
-				'trans' => 'Kontaktná osoba',
-			],
-			[
-				'type' 	=> 'text',
-				'name' => 'email',
-				'rules' =>  ['notEmpty', 'email'],
-				'trans' => 'E-mail',
-
-			],
-			[
-				'type' 	=> 'textarea',
-				'name' => 'message',
-				'rules' =>  ['notEmpty', 'stringType'],
-				'trans' => 'Správa',
-
-			],
-			[
-				'type' 	=> 'input',
-				'name' => 'g-recaptcha-response',
-				'rules' =>  ['notEmpty', 'stringType'],
-				'trans' => 'g-recaptcha-response error',
-
-			],
-		];
+		$formFields = [];
+		if (defined('JPACKAGE_FORM_FIELDS')) {
+			$formFields = JPACKAGE_FORM_FIELDS;
+		}
 
 		$formHeader = [
 			'application_from' 	=> [MailTransport::getFromEmail(), MailTransport::getFromName()],  // email FROM detail from application view

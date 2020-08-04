@@ -14,7 +14,7 @@ use JPackages\SimpleMailer\Validator\Validator;
 /**
  * Load environment variables from .env
  */
-DotEnvBootstrap::make('/../../');
+DotEnvBootstrap::make(JPACKAGE_START_PATH);
 /**
  * Capture the request.
  */

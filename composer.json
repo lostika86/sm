@@ -11,9 +11,18 @@
         "swiftmailer/swiftmailer": "^6.0",
         "ezyang/htmlpurifier": "^4.10",
         "respect/validation": "^1.1",
-
         "vlucas/phpdotenv": "^3.4.0",
         "illuminate/contracts": "^7.21",
         "illuminate/http": "^7.21"
+    },
+    "scripts": {
+
+        "post-package-update" : [
+            "JPackages\\SimpleMailer\\ComposerScripts::setup"
+        ],
+        "post-package-install" : [
+            "JPackages\\SimpleMailer\\ComposerScripts::setup"
+        ]
     }
+
 }
