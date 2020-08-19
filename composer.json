@@ -1,0 +1,38 @@
+{
+    "name": "lostika86/sm",
+    "description": "Simple mailing bootstrap package",
+    "autoload": {
+        "psr-4": {
+            "JPackages\\": "src/"
+        }
+    },
+    "require": {
+        "google/recaptcha": "1.2.4",
+        "swiftmailer/swiftmailer": "^6.2",
+        "ezyang/htmlpurifier": "^4.10",
+        "respect/validation": "^1.1",
+        "vlucas/phpdotenv": "^3.4.0",
+        "illuminate/contracts": "^6.10",
+        "illuminate/http": "^6.10"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true,
+        "platform": {
+
+            "php": "7.3"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump" : [
+            "JPackages\\SimpleMailer\\ComposerScripts::setupMailer"
+        ],
+        "post-package-update" : [
+            "JPackages\\SimpleMailer\\ComposerScripts::setupMailer"
+        ],
+        "post-package-install" : [
+            "JPackages\\SimpleMailer\\ComposerScripts::setupMailer"
+        ]
+    }
+
+}
