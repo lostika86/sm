@@ -57,7 +57,7 @@ abstract class Config
 			return [];
 		}
 
-		return $fromEmailExists;
+		return $emailDetails;
 	}
 
 	public static function getClientEmailSubjectBlock()
