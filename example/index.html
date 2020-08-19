@@ -40,15 +40,15 @@
         const CAPTCHA_ACTION = 'submit';
         const REQUEST_URL = form.attr('action');
 
-        let requestData =  {
-            'contact_name': $('#contact_name').val(),
-            'email': $('#email').val(),
-            'message': $('#message').val(),
-        };
+        let requestData =  {};
 
         form.on('submit',function (e) {
             e.preventDefault();
-
+            let requestData =  {
+                'contact_name': $('input[name="contact_name"]').val(),
+                'contact_email': $('input[name="contact_email"]').val(),
+                'contact_message': $('textarea[name="contact_message"]').val(),
+            };
             grecaptcha.ready(function() {
                 grecaptcha.execute(SITE_KEY, {action: CAPTCHA_ACTION}).then(function(token) {
                     requestData['g-recaptcha-response'] = token;

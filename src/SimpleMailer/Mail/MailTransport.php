@@ -55,11 +55,13 @@ class MailTransport
 			'fromEmail'  => getenv('MAIL_FROM_ADDRESS'),
 			'fromName'   => getenv('MAIL_FROM_NAME'),
 			'replyTo'    => getenv('MAIL_REPLY_TO'),
-			'encryption' => 'tls',
-//			'encryption' => 'ssl',
 		];
-//		$config 	= $this->config;
 
+		$encryption = getenv('MAIL_ENCRYPTION');
+
+		if ($encryption === 'ssl' || $encryption === 'tls') {
+			$config['encryption'] 	= $encryption;
+		}
 		if (empty($key)) {
 			return $config;
 		}
