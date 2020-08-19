@@ -10,11 +10,20 @@ class Header
 	{
 		$formHeader 	= Config::header();
 
-		$clientTo = Arr::only($input, $formHeader['client_from']);
+		$clientFromEmailDetails  = $formHeader['client_from'];
+		$clientTo = Arr::only($input, $clientFromEmailDetails);
 
-		return [
+		$to = [
 			$formHeader['application_from'][0] => $formHeader['application_from'][1],
-			$clientTo[$formHeader['client_from'][0]] => $clientTo[$formHeader['client_from'][1]]
 		];
+
+		if (isset($formHeader['client_from'][1])) {
+			$to[] = [$clientTo[$formHeader['client_from'][0]] => $clientTo[$formHeader['client_from'][1]]];
+		} else{
+			$to[] = $clientTo[$formHeader['client_from'][0]];
+		}
+
+
+		return $to;
 	}
 }

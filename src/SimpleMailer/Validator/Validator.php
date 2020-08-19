@@ -144,5 +144,10 @@ class Validator
 			$this->getMessageBag()->add($key, $message);
 		}
 	}
+	public function translate(string $name)
+	{
+		return $name;
+	}
+
 
 }

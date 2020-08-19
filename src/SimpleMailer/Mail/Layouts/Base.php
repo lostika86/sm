@@ -35,6 +35,10 @@ class Base
  			$this->setTo($to);
 		}
 
+		if (!empty($subject  = $mailBody->getSubject())) {
+			$this->setSubject($subject);
+		}
+
 		$this->setMailBody($mailBody);
 		$this->setMessage(new \Swift_Message());
 
@@ -49,7 +53,7 @@ class Base
 			->setFrom($this->getFrom())
 			->setTo($this->getTo())
 //			->setSubject($this->getMailBody()->getTranslationFor('mail_subject'))
-			->setSubject('mail_subject')
+			->setSubject($this->getSubject())
 			->setReplyTo(MailTransport::getReplyTo())
 			->setBody($this->getMailBody()->getBody(), 'text/html')
 		;

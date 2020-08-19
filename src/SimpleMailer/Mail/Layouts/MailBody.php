@@ -13,6 +13,25 @@ class MailBody
 	/** @var  string */
 	private $body = '';
 
+	/** @var string */
+	private $subject = '';
+
+	/**
+	 * @return string
+	 */
+	public function getSubject(): string
+	{
+		return $this->subject;
+	}
+
+	/**
+	 * @param string $subject
+	 */
+	public function setSubject(string $subject)
+	{
+		$this->subject = $subject;
+	}
+
 	/** @var array */
 	protected $translation;
 
@@ -23,8 +42,14 @@ class MailBody
 	{
 		$this->setData($data);
 
+		if (!empty($blockName = Config::getClientEmailSubjectBlock())) {
+			$this->setSubject($data[$blockName]);
+		}
+
 		$this->buildMailBody();
 	}
+
+
 
 	protected function buildMailBody()
 	{
@@ -44,7 +69,7 @@ class MailBody
 
 
 			} else{
-				$block = '<p>'.$fields->get($block)["trans"].':'. $value.'</p>';
+				$block = '<p>'.$fields->get($block)["trans"].': '. $value.'</p>';
 			}
 			$this->setBody($block);
 		}
