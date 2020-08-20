@@ -2,7 +2,10 @@
 
 namespace JPackages\SimpleMailer\Mail\Layouts;
 
+use Illuminate\Support\Collection;
 use JPackages\SimpleMailer\Config;
+use JPackages\SimpleMailer\ConfigurationContainer;
+use JPackages\SimpleMailer\Mail\Translator\Translator;
 use JPackages\SimpleMailer\Recaptcha\CaptchaValidator;
 
 class MailBody
@@ -16,35 +19,23 @@ class MailBody
 	/** @var string */
 	private $subject = '';
 
-	/**
-	 * @return string
-	 */
-	public function getSubject(): string
-	{
-		return $this->subject;
-	}
+	public $locale = 'sk';
 
-	/**
-	 * @param string $subject
-	 */
-	public function setSubject(string $subject)
-	{
-		$this->subject = $subject;
-	}
+	/** @var Collection */
+	protected $translations;
 
 	/** @var array */
-	protected $translation;
+	private $hidden = [CaptchaValidator::CAPTCHA_RESPONSE_KEY,Translator::KEY_LOCALE_INPUT];
 
-	/** @var array */
-	private $hidden = [CaptchaValidator::CAPTCHA_RESPONSE_KEY];
-
-	public function __construct(array $data)
+	public function __construct(array $data, string $locale = 'sk')
 	{
 		$this->setData($data);
 
 		if (!empty($blockName = Config::getClientEmailSubjectBlock())) {
 			$this->setSubject($data[$blockName]);
 		}
+
+		$this->setLocale($locale);
 
 		$this->buildMailBody();
 	}
@@ -55,32 +46,19 @@ class MailBody
 	{
 		$data = $this->getData();
 
-		$fields 	= collect(Config::fields())->keyBy('name');
+		$fields 	= collect(ConfigurationContainer::getConfigs()->getFormFieldsConfig())->keyBy('name');
+
 		foreach ($data as $block => $value)
 		{
 			if (in_array($block, $this->hidden, true)) {
 				continue;
 			}
-			$methodName =  'block' . ucfirst(ucwords($block));
-
-			if (method_exists($this,$methodName))
-			{
-				$block = $this->$methodName($value);
-
-
-			} else{
-				$block = '<p>'.$fields->get($block)["trans"].': '. $value.'</p>';
-			}
+			$blockName  = $fields->get($block)["name"];
+			$block = '<p>' . $this->getTranslationFor($blockName) . ': ' . $value . '</p>';
 			$this->setBody($block);
 		}
 	}
 
-
-
-	private function blockContactMessage(string $value)
-	{
-		return '<p>'.$this->getTranslationFor('message').':'. $value.'</p>';
-	}
 
 	/**
 	 * @return array
@@ -114,26 +92,45 @@ class MailBody
 		$this->body .= $body;
 	}
 
-	protected function getTranslationFile()
-	{
-
-		if (!isset($this->translation)) {
-			$this->translation = (array) include __DIR__.'/../translation.php';
-		}
-		return $this->translation;
-
-	}
 
 	public function getTranslationFor(string $key = '')
 	{
-		if (empty($key)) {
-			return '';
-		}
-		$translations = $this->getTranslationFile();
-
-		if (array_key_exists($key, $translations)) {
-			return $translations[ $key ];
-		}
+		return $this->translations->get($key, '');
 	}
 
+	/**
+	 * Sets default locale from request, or as a variable.
+	 * @param string $locale
+	 */
+	protected function setLocale(string $locale = 'sk')
+	{
+		$this->locale = $locale;
+
+		if (array_key_exists(Translator::KEY_LOCALE_INPUT, $this->getData())
+			&& is_string($localeInput = $this->getData()[ Translator::KEY_LOCALE_INPUT ])
+			&& !empty($localeInput)) {
+			$this->locale = $localeInput;
+		}
+
+		// get translations from config too
+		$translator = new Translator($this->locale);
+		$this->translations 	= $translator->getTranslations();
+
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getSubject(): string
+	{
+		return $this->subject;
+	}
+
+	/**
+	 * @param string $subject
+	 */
+	public function setSubject(string $subject)
+	{
+		$this->subject = $subject;
+	}
 }

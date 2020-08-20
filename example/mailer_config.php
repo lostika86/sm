@@ -4,21 +4,28 @@ return [
 		'type' 	=> 'text',
 		'name' => 'contact_name',
 		'rules' =>  ['notEmpty', 'stringType'],
-		'trans' => 'Kontaktná osoba',
+		'trans' => [
+			'sk' => 'Kontaktná osoba',
+			'hu'	=> 'Kapcsolattartó'
+		],
 		'actions' => ['key_from_name']
 	],
 	[
 		'type' 	=> 'text',
 		'name' => 'contact_subject',
 		'rules' =>  ['notEmpty', 'stringType'],
-		'trans' => 'Predmet správy',
+		'trans' => [
+			'sk' => 'Predmet správy'
+		],
 		'actions' => ['key_mail_subject']
 	],
 	[
 		'type' 	=> 'text',
 		'name' => 'contact_phone',
 		'rules' =>  ['notEmpty', 'stringType'],
-		'trans' => 'Tel.číslo',
+		'trans' => [
+			'sk' => 'Tel.číslo'
+		],
 	],
 	[
 		'type' 	=> 'text',
@@ -31,7 +38,9 @@ return [
 		'type' 	=> 'textarea',
 		'name' => 'contact_message',
 		'rules' =>  ['notEmpty', 'stringType'],
-		'trans' => 'Správa',
+		'trans' => [
+			'sk' => 'Správa'
+		],
 
 	],
 	[

@@ -5,34 +5,31 @@
 <html lang="sk">
 <head>
     <title>Simple Mail Package Example</title>
-<!--    Step: 1.-->
-<!--    Add SITE_KEY in the link after "render="-->
-<!--    <script src="https://www.google.com/recaptcha/api.js?render=SITE_KEY"></script>-->
+    <!--    Step: 1.-->
+    <!--    Add SITE_KEY in the link after "render="-->
+    <!--    <script src="https://www.google.com/recaptcha/api.js?render=SITE_KEY"></script>-->
     <script src="https://www.google.com/recaptcha/api.js?render=6LcGKKoZAAAAAC_m382ekbY3LnPxqbC6977OzfXF"></script>
 </head>
 <body>
 <!--Step: 2.-->
 <!--    Action defines the entry point of mail sending-->
-    <form action="email.php" method="POST" id="simple-form" class="form contact-simple">
-        <div>
-            <label for="contact_name"></label>
-            <input id="contact_name" name="contact_name" type="text" value="First & Last Name">
-        </div>
-        <div>
-            <label for="email"></label>
-            <input id="email" name="email" type="text" value="mymail@example.com">
-        </div>
-        <div>
-            <label for="message"></label>
-            <textarea id="message" name="message">Lorem ipsum dolor sit</textarea>
-        </div>
-        <button type="submit">Send message</button>
-    </form>
+<form action="email.php" method="POST" id="contact-form" class="base-contact-form">
+    <input type="text" name="contact_name" placeholder="Meno a priezvisko *" required="">
+    <input type="text" name="contact_subject" placeholder="Predmet *" required="">
+    <input type="text" name="contact_phone" placeholder="Telefónne číslo">
+    <input type="email" name="contact_email" placeholder="Email *" required="">
+    <textarea name="contact_message" placeholder="Správa *" required=""></textarea>
+    <span>Polia označené * sú povinné</span>
+    <button class="btn" type="submit">
+        Odoslať
+        <img src="http://demo.euro3.sk/resources/img/svg/arrow.svg" alt="euro3trade-arrow">
+    </button>
+</form>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
 
     $(document).ready(function () {
-        let form = $('#simple-form');
+        let form = $('#contact-form');
 
         // Step: 3.
         // insert SITE_KEY too
@@ -44,10 +41,13 @@
 
         form.on('submit',function (e) {
             e.preventDefault();
-            let requestData =  {
+            requestData =  {
                 'contact_name': $('input[name="contact_name"]').val(),
+                'contact_subject': $('input[name="contact_subject"]').val(),
+                'contact_phone': $('input[name="contact_phone"]').val(),
                 'contact_email': $('input[name="contact_email"]').val(),
                 'contact_message': $('textarea[name="contact_message"]').val(),
+                '_locale' : 'sk' // locale can be changed
             };
             grecaptcha.ready(function() {
                 grecaptcha.execute(SITE_KEY, {action: CAPTCHA_ACTION}).then(function(token) {

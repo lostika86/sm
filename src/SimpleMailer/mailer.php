@@ -11,8 +11,7 @@ use JPackages\SimpleMailer\Mail\MailTransport;
 use JPackages\SimpleMailer\Response\ResponseContent;
 use JPackages\SimpleMailer\Response\SenderResponse;
 use JPackages\SimpleMailer\Validator\Validator;
-$x = ConfigurationContainer::getConfigs();
-dd($x->configuration(),$x->getFormFieldsConfig(),$x->getFormHeadersConfig());
+
 /**
  * Load environment variables from .env
  */
@@ -40,7 +39,7 @@ $responseContent->setFailedStatus();
 // ok, than check data validity
 if ($validator->success()){
 	// compose mailbody, and prepare e-mail for sending
-	$mailBody = new MailBody($requestData->getInput());
+	$mailBody = new MailBody($requestData->getInput(),'hu');
 	$mailBase = new Base($mailBody);
 	// make the SMTP transport layer
 	$mailer = new MailTransport();
