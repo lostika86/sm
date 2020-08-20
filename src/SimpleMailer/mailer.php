@@ -23,7 +23,7 @@ $requestData = new RequestData();
  * Preparing response.
  */
 $senderResponse = new SenderResponse(); // TODO make response json compatible
-if (!$requestData->getRequest()->ajax() && $requestData->getRequest()->isMethod('POST')) {
+if (!$requestData->getRequest()->ajax() && !$requestData->getRequest()->isMethod('POST')) {
 	// only xhr request is allowed
 	return $senderResponse->setStatusCode(403)->send();
 }
