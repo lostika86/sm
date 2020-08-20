@@ -11,7 +11,8 @@ use JPackages\SimpleMailer\Mail\MailTransport;
 use JPackages\SimpleMailer\Response\ResponseContent;
 use JPackages\SimpleMailer\Response\SenderResponse;
 use JPackages\SimpleMailer\Validator\Validator;
-
+$x = ConfigurationContainer::getConfigs();
+dd($x->configuration(),$x->getFormFieldsConfig(),$x->getFormHeadersConfig());
 /**
  * Load environment variables from .env
  */

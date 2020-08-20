@@ -79,7 +79,7 @@ abstract class Config
 		return '';
 	}
 
-	private static function getFormFields(): array
+	public static function getFormFields(): array
 	{
 		$formFields = [];
 		if (defined('JPACKAGE_FORM_FIELDS')) {
@@ -87,4 +87,6 @@ abstract class Config
 		}
 		return $formFields;
 	}
+
+
 }
