@@ -27,7 +27,6 @@
 </form>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-
     $(document).ready(function () {
         let form = $('#contact-form');
 
@@ -37,17 +36,26 @@
         const CAPTCHA_ACTION = 'submit';
         const REQUEST_URL = form.attr('action');
 
-        let requestData =  {};
+        let requestData = {};
+        let formData =  {
+            'contact_name': $('input[name="contact_name"]'),
+            'contact_subject': $('input[name="contact_subject"]'),
+            'contact_phone': $('input[name="contact_phone"]'),
+            'contact_email': $('input[name="contact_email"]'),
+            'contact_message': $('textarea[name="contact_message"]'),
+            '_locale' : '{{ currentSite.language }}'
+        };
+        let formResponse = $('.form-response');
 
         form.on('submit',function (e) {
             e.preventDefault();
             requestData =  {
-                'contact_name': $('input[name="contact_name"]').val(),
-                'contact_subject': $('input[name="contact_subject"]').val(),
-                'contact_phone': $('input[name="contact_phone"]').val(),
-                'contact_email': $('input[name="contact_email"]').val(),
-                'contact_message': $('textarea[name="contact_message"]').val(),
-                '_locale' : 'sk' // locale can be changed
+                'contact_name': formData.contact_name.val(),
+                'contact_subject': formData.contact_subject.val(),
+                'contact_phone': formData.contact_phone.val(),
+                'contact_email': formData.contact_email.val(),
+                'contact_message': formData.contact_message.val(),
+                '_locale' : '{{ currentSite.language }}'
             };
             grecaptcha.ready(function() {
                 grecaptcha.execute(SITE_KEY, {action: CAPTCHA_ACTION}).then(function(token) {
@@ -60,6 +68,7 @@
         });
 
         function makeRequest() {
+            removeErrorClasses();
             $.ajax( {
                 url : REQUEST_URL,
                 data :  requestData,
@@ -67,11 +76,11 @@
             } )
              .done(function(data, textStatus, jqXHR) {
                  if (data.status === true) {
-                     actionOnSuccess();
+                     actionOnSuccess(data);
                      form[0].reset();
                  }
                  if (data.status === false) {
-                     actionOnUnSuccess();
+                     actionOnUnSuccess(data);
                  }
              })
              .fail(function(data, textStatus, jqXHR) {
@@ -82,12 +91,20 @@
              });
         }
 
-        function actionOnSuccess() {
+        function actionOnSuccess(data) {
             // make some animation atc. if submit is successfully sent ...
+            formResponse.removeClass('success failed').addClass('success');
         }
 
-        function actionOnUnSuccess() {
+        function actionOnUnSuccess(data) {
             // make some animation atc. if submit was not sent ...
+            formResponse.removeClass('success failed').addClass('failed');
+
+            if (Object.keys(data.errors).length > 0) {
+                Object.keys(data.errors).forEach((inputName) => {
+                    formData[inputName].addClass('has-error');
+                })
+            }
         }
 
         function actionOnFail() {
@@ -98,10 +115,11 @@
             // this block always run if request ended ...
         }
 
+        function removeErrorClasses(){
+            form.find('.has-error').removeClass('has-error')
+        }
 
     });
-
-
 </script>
 </body>
 </html>
