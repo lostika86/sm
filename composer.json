@@ -7,6 +7,8 @@
         }
     },
     "require": {
+        "php" : "7.3",
+        "ext-mbstring": "*",
         "google/recaptcha": "1.2.4",
         "swiftmailer/swiftmailer": "^6.2",
         "ezyang/htmlpurifier": "^4.10",
