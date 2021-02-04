@@ -59,7 +59,7 @@ class MailBody
 			if (in_array($block, $parameters->get('hiddenFields'), true))
 				continue;
 
-			$blockName  = $fields->get($block)["name"];
+			$blockName  = (string) $fields->get($block)["name"];
 			$block = '<p>' . $this->getTranslationFor($blockName) . ': ' . $value . '</p>';
 			$this->setBody($block);
 		}

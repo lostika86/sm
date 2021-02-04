@@ -1,5 +1,5 @@
 <?php namespace JPackages\SimpleMailer;
-
+error_reporting(E_ERROR );
 require_once JPACKAGE_VENDOR_PATH . '/autoload.php';
 
 use JPackages\SimpleMailer\Cleaning\CleanRequest;
