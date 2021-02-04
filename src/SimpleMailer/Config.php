@@ -20,7 +20,8 @@ abstract class Config
 
 		return [
 			'formFields' => $formFields,
-			'formHeader' => $formHeader
+			'formHeader' => $formHeader,
+			'formParameters' => self::getFormParameters()
 		];
 	}
 
@@ -32,6 +33,11 @@ abstract class Config
 	public static function header() : array
 	{
 		return self::formConfig()['formHeader'];
+	}
+
+	public static function parameters() : array
+	{
+		return self::formConfig()['formParameters'];
 	}
 
 	protected static function getClientEmailDetails()
@@ -64,7 +70,6 @@ abstract class Config
 	{
 		$formFields = self::getFormFields();
 
-
 		foreach ($formFields as $formField) {
 			if (array_key_exists('actions', $formField) && is_array($formField['actions']) && !empty($actions = $formField['actions'])) {
 				if (in_array('key_mail_subject', $actions, true)) {
@@ -75,7 +80,6 @@ abstract class Config
 			}
 		}
 
-
 		return '';
 	}
 
@@ -85,7 +89,26 @@ abstract class Config
 		if (defined('JPACKAGE_FORM_FIELDS')) {
 			$formFields = JPACKAGE_FORM_FIELDS;
 		}
-		return $formFields;
+
+		if (array_key_exists('fields', $formFields)) {
+			return $formFields['fields'];
+		}
+
+		return [];
+	}
+
+	public static function getFormParameters(): array
+	{
+		$formFields = [];
+		if (defined('JPACKAGE_FORM_FIELDS')) {
+			$formFields = JPACKAGE_FORM_FIELDS;
+		}
+
+		if (array_key_exists('parameters', $formFields)) {
+			return $formFields['parameters'];
+		}
+
+		return [];
 	}
 
 

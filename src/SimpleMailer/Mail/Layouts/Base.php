@@ -24,7 +24,7 @@ class Base
 	/** @var  \Swift_Message */
 	private $message;
 
-	public function __construct(MailBody $mailBody, array $to = [])
+	public function __construct(MailBody $mailBody, array $to = [], \Swift_Message $message = null)
 	{
 		$this->setFrom(MailTransport::getFromEmail());
 
@@ -40,7 +40,7 @@ class Base
 		}
 
 		$this->setMailBody($mailBody);
-		$this->setMessage(new \Swift_Message());
+		$this->setMessage($message === null ? new \Swift_Message() : $message);
 
 		$this->boot();
 	}

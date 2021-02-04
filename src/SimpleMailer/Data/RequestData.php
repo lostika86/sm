@@ -62,4 +62,13 @@ class RequestData
 	{
 		return $this->getRequest()->getMethod() === 'POST';
 	}
+
+	/**
+	 * Does the request contains files
+	 * @return bool
+	 */
+	public function containsFiles(): bool
+	{
+		return $this->getRequest()->files->count() > 0;
+	}
 }

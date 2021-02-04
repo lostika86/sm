@@ -10,6 +10,7 @@ use JPackages\SimpleMailer\Mail\MailTransport;
 use JPackages\SimpleMailer\Response\ResponseContent;
 use JPackages\SimpleMailer\Response\SenderResponse;
 use JPackages\SimpleMailer\Validator\Validator;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Load environment variables from .env
@@ -19,6 +20,7 @@ DotEnvBootstrap::make(JPACKAGE_START_PATH);
  * Capture the request.
  */
 $requestData = new RequestData();
+
 /**
  * Preparing response.
  */
@@ -46,9 +48,23 @@ $responseContent->setFailedStatus();
 
 // ok, than check data validity
 if ($validator->success()){
+	$message = null;
+
 	// compose mailbody, and prepare e-mail for sending
 	$mailBody = new MailBody($requestData->getInput(),'sk');
-	$mailBase = new Base($mailBody);
+
+	if ($validator->getValidFileBag()->count() > 0) {
+		$message = new \Swift_Message();
+		foreach ($validator->getValidFileBag()->all() as $file) {
+			if ($file->isValid()){
+				/** @var UploadedFile $file */
+				$attachment = new \Swift_Attachment($file->getPathname(),$file->getClientOriginalName(),$file->getMimeType());
+				$message->attach($attachment);
+			}
+
+		}
+	};
+	$mailBase = new Base($mailBody, [], $message);
 	// make the SMTP transport layer
 	$mailer = new MailTransport();
 	$mailer->setBase($mailBase);

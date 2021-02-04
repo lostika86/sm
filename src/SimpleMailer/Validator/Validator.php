@@ -2,17 +2,18 @@
 
 namespace JPackages\SimpleMailer\Validator;
 
-
 use Illuminate\Support\MessageBag;
 use JPackages\SimpleMailer\Config;
 use JPackages\SimpleMailer\Recaptcha\CaptchaValidator;
 use JPackages\SimpleMailer\Recaptcha\ValidationMessage;
 use Respect\Validation\Exceptions\NestedValidationException;
+use Respect\Validation\Validatable;
 use Respect\Validation\Validator as RespectValidator;
+use Symfony\Component\HttpFoundation\FileBag;
 
 class Validator
 {
-	/** @var \Respect\Validation\Validator */
+	/** @var RespectValidator */
 	protected $validator;
 
 	/** @var MessageBag */
@@ -21,12 +22,16 @@ class Validator
 	/** @var array  */
 	protected $validation = [];
 
+	/** @var FileBag */
+	protected $validFileBag;
 
 	public function __construct()
 	{
 		$this->validator = new RespectValidator();
 
 		$this->messageBag 	= new MessageBag();
+
+		$this->validFileBag = new FileBag();
 
 	}
 
@@ -40,29 +45,67 @@ class Validator
 
         $fields = Config::fields();
 
+
+		$this->getValidator()::with('JPackages\\SimpleMailer\\Validator\\Rules');
+
 		foreach ($fields as $fieldData) {
 			$rules 	= $fieldData['rules'];
 
 			$this->createValidation($name = $fieldData['name'])
 				 ->setName($name);
+
+
 			if ($name === CaptchaValidator::CAPTCHA_RESPONSE_KEY){
-  				 	continue;
+				continue;
 			}
 			$messageTemplate 	= new ErrorMessageTemplate();
 
-		   	$this->getValidation($name)->addRules( $rules)->setTemplate($messageTemplate->getErrorMessage($name));
-			try {
+			if (!empty($multiFileRules = $this->extractMultiFileRule($rules))) {
+                // check against our multiFile rule,
+				// if found, check against child rules
+				$mfValidator = RespectValidator::create();
 
+				foreach ($multiFileRules as $index => $mfRule) {
+					// sometimes our rule can have parameters
+					if (!is_array($mfRule)) {
+						 $mfValidator->addRule($mfRule);
+					}else{
+						$mfValidator->addRule($index,$mfRule);
+					}
+				}
+
+				$this->validation[$name] = $multiFileValidation = RespectValidator::multiFile($mfValidator->getRules());
+
+			}
+
+			// these rule appending is for our simpliest validation rules
+			if (!isset($multiFileValidation)) {
+		   	$this->getValidation($name)->addRules( $rules)->setTemplate($messageTemplate->getErrorMessage($name));
+			}
+
+			// soo lets begin to validate everything
+			try {
+				// ok, the needles field data name exists on our request input
 				if (array_key_exists($name, $input)) {
+					// try to validate
 					$this->getValidation($name)->assert( $input[$name]);
 				} else{
+					// input does not contain needed field data
 					$this->setMessageBag([$name => $this->translate($name) ]);
 				}
+
+				if ($fieldData['type'] === 'file') {
+					$this->validFileBag->add($input[$name]);
+				}
 			} catch(NestedValidationException $exception) {
+				// push everything into a bag ...
 				$this->pushMessagesIntoBag($name,$exception->getMessages());
 			}
+
+
 		}
 
+		// TODO think again our old captcha
 		$recaptchaResult = CaptchaValidator::verify($input[$key = CaptchaValidator::CAPTCHA_RESPONSE_KEY]);
 
 		if (!empty($recaptchaResult)) {
@@ -72,7 +115,15 @@ class Validator
 		}
 
 		return true;
+	}
 
+	protected function extractMultiFileRule(array $rules)
+	{
+		if (array_key_exists('multiFile', $rules)) {
+			return $rules['multiFile'];
+		}
+
+		return [];
 	}
 
 	/**
@@ -94,24 +145,24 @@ class Validator
 		return $this->validation[$name] = $this->validator->create();
 	}
 
-	protected function getValidation(string $name)
+	protected function getValidation(string $name) : Validatable
 	{
 		return $this->validation[$name];
 	}
 
 
 	/**
-	 * @return \Respect\Validation\Validator
+	 * @return RespectValidator
 	 */
-	public function getValidator(): \Respect\Validation\Validator
+	public function getValidator(): RespectValidator
 	{
 		return $this->validator;
 	}
 
 	/**
-	 * @param \Respect\Validation\Validator $validator
+	 * @param RespectValidator $validator
 	 */
-	public function setValidator(\Respect\Validation\Validator $validator)
+	public function setValidator(RespectValidator $validator)
 	{
 		$this->validator = $validator;
 	}
@@ -149,5 +200,13 @@ class Validator
 		return $name;
 	}
 
+
+	/**
+	 * @return FileBag
+	 */
+	public function getValidFileBag(): FileBag
+	{
+		return $this->validFileBag;
+	}
 
 }

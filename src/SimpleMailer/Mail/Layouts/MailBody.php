@@ -48,11 +48,17 @@ class MailBody
 
 		$fields 	= collect(ConfigurationContainer::getConfigs()->getFormFieldsConfig())->keyBy('name');
 
+		$parameters = collect(ConfigurationContainer::getConfigs()->getFormParameters());
+
+
 		foreach ($data as $block => $value)
 		{
 			if (in_array($block, $this->hidden, true)) {
 				continue;
 			}
+			if (in_array($block, $parameters->get('hiddenFields'), true))
+				continue;
+
 			$blockName  = $fields->get($block)["name"];
 			$block = '<p>' . $this->getTranslationFor($blockName) . ': ' . $value . '</p>';
 			$this->setBody($block);

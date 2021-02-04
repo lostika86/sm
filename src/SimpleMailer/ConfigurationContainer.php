@@ -68,4 +68,9 @@ class ConfigurationContainer
 	{
 		return collect($this->configuration()->get('formHeader'));
 	}
+
+	public function getFormParameters(): Collection
+	{
+		return collect($this->configuration()->get('formParameters'));
+	}
 }
