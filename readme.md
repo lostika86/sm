@@ -5,7 +5,7 @@ Add this lines to composer.json or update current by adding with these lines.
 ```
 {
    "require": {
-     "lostika86/sm" : "1.2.0"
+     "lostika86/sm" : "1.2.1"
    },
    "repositories":[
      {
