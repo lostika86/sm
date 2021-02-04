@@ -58,7 +58,7 @@ if ($validator->success()){
 		foreach ($validator->getValidFileBag()->all() as $file) {
 			if ($file->isValid()){
 				/** @var UploadedFile $file */
-				$attachment = new \Swift_Attachment($file->getPathname(),$file->getClientOriginalName(),$file->getMimeType());
+				$attachment = new \Swift_Attachment(file_get_contents($file->getPathname()),$file->getClientOriginalName(),$file->getMimeType());
 				$message->attach($attachment);
 			}
 
